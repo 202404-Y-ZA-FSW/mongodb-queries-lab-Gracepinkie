@@ -1,6 +1,5 @@
 # MongoDB Queries Practice
-
-Write a MongoDB query to:
+ MongoDB query:
 
 1. Display all the documents in the restaurants collection.
 ```
@@ -116,55 +115,57 @@ db.restaurants.find({ "grades.score": { $not: { $gt: 10 } } }, { restaurant_id: 
 
 21. Find the restaurant_id, name, borough and cuisine for those restaurants which either prepare dishes except 'American' and 'Chinese' or has a name which begins with the letters 'Wil'.
 ```
-
+db.restaurants.find({$or:[{$and:[{ cuisine: { $ne: "American"}},{cuisine:{$ne:"chinese"}}]},{name:{$regex:/^will/}}]},{_id:1,name:1,borough:1,cuisine:1})
 ```
 
 22. Find the restaurant_id, name, and grades for those restaurants which achieved an A grade and scored 11 on the date "2014-08-11T00:00:00Z" among many of survey dates.
 ```
-Paste your solution here
+db.restaurants.find({$and:[{"grades":{$elemMatch:{"grade":"A","score":11,"date":ISODate("2014-08-11T00:00:00Z")}}}]},{_id:1,name:1,grades:1})
 ```
 
 23. Find the restaurant_id, name and grades for those restaurants where the 2nd element of grades array contains a grade of "A" and score 9 on an ISODate "2014-08-11T00:00:00Z".
 ```
-Paste your solution here
+db.rest.find({$and: [{"grades.1.grade":"A"}, {"grades.1.score": 9}, {"grades.1.date": ISODate("2014-08-11T00:00:00Z")}]},{_id:0, restaurant_id:1, name:1, grades:1}).pretty()
 ```
 
 24. Find the restaurant_id, name, address and geographical location for those restaurants where 2nd element of coord array contains a value which is more than 42 and upto 52.
 ```
-Paste your solution here
+db.rest.find({$and : [{"address.coord.1": {$gt : 42}},{"address.coord.1": {$lte : 52}}]}, {_id:0, restaurant_id:1, name:1, address:1})
 ```
 
 25. Arrange the name of the restaurants in ascending order along with all the columns.
 ```
-Paste your solution here
+db.restaurants.find().sort({ name: 1})
 ```
 
 26. Arrange the name of the restaurants in descending along with all the columns.
 ```
-Paste your solution here
+db.restaurants.find().sort({ name: -1})
 ```
 
 27. Arrange the restaurants in ascending order of cuisines and descending order of boroughs.
 ```
-Paste your solution here
+db.restaurants.find().sort({cuisine:1,borough:-1})
+
 ```
 
 28. Check whether all the resturant addresses contain the street or not.
 ```
-Paste your solution here
+db.restaurants.find({"address.street":{$exists:false}}).count()==0
 ```
 
 29. Display all documents in the restaurants collection where the coord field value is a Double.
 ```
-Paste your solution here
+db.restaurants.find({ "coord": { $type: "double" } })
 ```
 
 30. Display the restaurant_id, name and grades for those restaurants which have a grade divisible by 7.
 ```
-Paste your solution here
+db.restaurants.find("{grades.score":{$mod:[7,0]}},{restaurant_id:1,name:1,grades:1,_id:0})
+
 ```
 
 31. Find the restaurant name, borough, longitude and latitude and cuisine for those restaurants which contain 'mon' as three letters somewhere in its name.
 ```
-Paste your solution here
+db.restaurants.find({name: {$regex: /mon/}},{_id:0, name:1, borough:1, "address.coord":1, cuisine:1})
 ```
